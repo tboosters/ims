@@ -22,9 +22,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Utilities
+// Utilities and console logging
 app.use(function (req, res, next) {
     req.resBuilder = resBuilder;
+    console.log("Receives a request");
     next();
 });
 
