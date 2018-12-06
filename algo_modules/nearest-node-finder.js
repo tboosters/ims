@@ -1,3 +1,5 @@
+let slowFunction = require('../utilities/slow-function');
+
 /**
  * Find the nearest node of the input node in the map graph,
  * and then returns the nodeID of that nearest node.
@@ -14,7 +16,13 @@ function find(longitude, latitude) {
         );
     });
 
-    return p
+    return p;
+}
+
+function slowFind(longitude, latitude) {
+    slowFunction(4.4);
+    return 0;
 }
 
 module.exports.find = find;
+module.exports.slowFind = slowFind;

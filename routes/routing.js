@@ -1,4 +1,5 @@
 let createError = require('http-errors');
+let startWorker = require('../utilities/create-worker-thread');
 
 let express = require('express');
 let router = express.Router();
@@ -92,29 +93,18 @@ router.post('/slow', function(req, res, next) {
     }catch(error) {
         return next(error);
     }
-
-    let graphOriginPromise =
-        nearestNodeFinder.find(requestOriginLong, requestOriginLat);
-    let graphDestinationPromise = 
-        nearestNodeFinder.find(requestDestinationLong, requestDestinationLat);
-    
-    Promise.all([graphOriginPromise, graphDestinationPromise])
-    .then((graphNodes) => {
-        // Fire O.D. request to path-finding module with new coordinates
-        let graphOrigin = graphNodes[0];
-        let graphDestination = graphNodes[1];
-        // let pathPromise = crowdControlodule.route(graphOrigin, graphDestination)
-        let pathPromise = routingModule.slowRoute(graphOrigin, graphDestination);
-        return pathPromise;
-    })
-    .then((path) => {
+  
+    let workerData = {
+        "requestOrigin": [requestOriginLong, requestOriginLat],
+        "requestDestination": [requestDestinationLong, requestDestinationLat]
+    };
+    startWorker("./algo_modules/routing-api.js", workerData, (err, path) => {
+        if(err) {
+            console.log(err);
+        }
         // Format path and return
         let result = resBuilder.build("OK", path);
         res.json(result);
-    })
-    .catch((error) => {
-        // Server error arose from nearest-node-finder or routing-module
-        next(createError(error));
     });
 });
 

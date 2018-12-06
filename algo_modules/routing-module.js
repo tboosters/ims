@@ -25,22 +25,6 @@ const longlat = [
 
 /**
  * Delegates O.D. request to the fast implementation of routing module.
- * EATS LOTS OF CPU CYCLES
- * 
- * @param {number} origin 
- * @param {number} destination 
- * @returns {Promise} Promise of the delegated job.
- */
-function slowRoute(origin, destination){
-    let p = new Promise((resolve, reject) => {
-        slowFunction(5);
-        resolve(longlat);
-    });
-    return p;
-}
-
-/**
- * Delegates O.D. request to the fast implementation of routing module.
  * DOESN'T EAT CPU CYCLES
  * 
  * @param {number} origin 
@@ -51,10 +35,23 @@ function route(origin, destination) {
     let p = new Promise((resolve, reject) => {
         setTimeout(
             () => resolve(longlat),
-            800
+            1300
         );
     });
     return p;
+}
+
+/**
+ * Delegates O.D. request to the fast implementation of routing module.
+ * EATS LOTS OF CPU CYCLES
+ * 
+ * @param {number} origin 
+ * @param {number} destination 
+ * @returns {longlat} longitude and latitude.
+ */
+function slowRoute(origin, destination){
+    slowFunction(5);
+    return longlat;
 }
 
 module.exports.slowRoute = slowRoute;
